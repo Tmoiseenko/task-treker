@@ -1,0 +1,166 @@
+# Apache конфигурация для Системы управления проектами
+# Этот файл должен находиться в корневой директории проекта
+# Laravel уже включает .htaccess в папке public/, но этот файл
+# предоставляет дополнительные настройки безопасности и оптимизации
+
+<IfModule mod_rewrite.c>
+    # Включить mod_rewrite
+    RewriteEngine On
+    
+    # Редирект на HTTPS (раскомментируйте после настройки SSL)
+    # RewriteCond %{HTTPS} off
+    # RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+    
+    # Редирект всех запросов в папку public
+    RewriteCond %{REQUEST_URI} !^/public/
+    RewriteRule ^(.*)$ /public/$1 [L]
+</IfModule>
+
+# Безопасность
+<IfModule mod_headers.c>
+    # Защита от clickjacking
+    Header always set X-Frame-Options "SAMEORIGIN"
+    
+    # Защита от MIME-sniffing
+    Header always set X-Content-Type-Options "nosniff"
+    
+    # XSS защита
+    Header always set X-XSS-Protection "1; mode=block"
+    
+    # Referrer Policy
+    Header always set Referrer-Policy "no-referrer-when-downgrade"
+    
+    # Content Security Policy (настройте под свои нужды)
+    # Header always set Content-Security-Policy "default-src 'self'"
+</IfModule>
+
+# Запретить доступ к конфигурационным файлам
+<FilesMatch "^\.">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+<FilesMatch "\.(env|git|gitignore|gitattributes)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Запретить доступ к директориям
+Options -Indexes
+
+# Кодировка по умолчанию
+AddDefaultCharset UTF-8
+
+# Сжатие (если mod_deflate включен)
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json
+</IfModule>
+
+# Кэширование статических файлов
+<IfModule mod_expires.c>
+    ExpiresActive On
+    
+    # Изображения
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+    ExpiresByType image/x-icon "access plus 1 year"
+    
+    # CSS и JavaScript
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType text/javascript "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    
+    # Шрифты
+    ExpiresByType font/ttf "access plus 1 year"
+    ExpiresByType font/otf "access plus 1 year"
+    ExpiresByType font/woff "access plus 1 year"
+    ExpiresByType font/woff2 "access plus 1 year"
+    ExpiresByType application/font-woff "access plus 1 year"
+</IfModule>
+
+# Максимальный размер загружаемых файлов
+php_value upload_max_filesize 100M
+php_value post_max_size 100M
+php_value max_execution_time 300
+php_value max_input_time 300
+
+# ===================================================================
+# Конфигурация для папки public/ (Laravel по умолчанию)
+# Этот файл уже существует в public/.htaccess
+# ===================================================================
+
+# <IfModule mod_negotiation.c>
+#     Options -MultiViews -Indexes
+# </IfModule>
+# 
+# <IfModule mod_rewrite.c>
+#     RewriteEngine On
+#     
+#     # Handle Authorization Header
+#     RewriteCond %{HTTP:Authorization} .
+#     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+#     
+#     # Redirect Trailing Slashes If Not A Folder...
+#     RewriteCond %{REQUEST_FILENAME} !-d
+#     RewriteCond %{REQUEST_URI} (.+)/$
+#     RewriteRule ^ %1 [L,R=301]
+#     
+#     # Send Requests To Front Controller...
+#     RewriteCond %{REQUEST_FILENAME} !-d
+#     RewriteCond %{REQUEST_FILENAME} !-f
+#     RewriteRule ^ index.php [L]
+# </IfModule>
+
+# ===================================================================
+# Инструкции по установке для Apache
+# ===================================================================
+
+# 1. Убедитесь, что следующие модули Apache включены:
+#    - mod_rewrite
+#    - mod_headers
+#    - mod_deflate (опционально, для сжатия)
+#    - mod_expires (опционально, для кэширования)
+#
+#    Включить модули:
+#    sudo a2enmod rewrite headers deflate expires
+#    sudo systemctl restart apache2
+
+# 2. Настройте виртуальный хост в /etc/apache2/sites-available/project-management.conf:
+#
+# <VirtualHost *:80>
+#     ServerName your-domain.com
+#     ServerAlias www.your-domain.com
+#     ServerAdmin admin@your-domain.com
+#     
+#     DocumentRoot /var/www/project-management/public
+#     
+#     <Directory /var/www/project-management>
+#         Options -Indexes +FollowSymLinks
+#         AllowOverride All
+#         Require all granted
+#     </Directory>
+#     
+#     <Directory /var/www/project-management/public>
+#         Options -Indexes +FollowSymLinks
+#         AllowOverride All
+#         Require all granted
+#     </Directory>
+#     
+#     ErrorLog ${APACHE_LOG_DIR}/project-management-error.log
+#     CustomLog ${APACHE_LOG_DIR}/project-management-access.log combined
+# </VirtualHost>
+
+# 3. Включите сайт:
+#    sudo a2ensite project-management.conf
+#    sudo systemctl reload apache2
+
+# 4. Для SSL используйте Let's Encrypt:
+#    sudo certbot --apache -d your-domain.com -d www.your-domain.com
+
+# 5. Настройте права доступа:
+#    sudo chown -R www-data:www-data /var/www/project-management
+#    sudo chmod -R 775 /var/www/project-management/storage
+#    sudo chmod -R 775 /var/www/project-management/bootstrap/cache
