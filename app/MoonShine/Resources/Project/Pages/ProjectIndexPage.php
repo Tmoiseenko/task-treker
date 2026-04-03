@@ -49,8 +49,8 @@ final class ProjectIndexPage extends IndexPage
     {
         return [
             Text::make('Название', 'name'),
-            Enum::make('Тип', 'type')->attach(ProjectType::class),
-            Enum::make('Статус', 'status')->attach(ProjectStatus::class),
+            Enum::make('Тип', 'type')->attach(ProjectType::class)->nullable(),
+            Enum::make('Статус', 'status')->attach(ProjectStatus::class)->nullable(),
         ];
     }
 

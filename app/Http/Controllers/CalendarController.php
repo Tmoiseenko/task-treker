@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\MoonshineUser;
 use App\Models\Project;
 use App\Models\Task;
 use App\Models\User;
@@ -23,8 +24,8 @@ class CalendarController extends Controller
         }
 
         // Get the date to display (default to current date)
-        $date = $request->filled('date') 
-            ? Carbon::parse($request->date) 
+        $date = $request->filled('date')
+            ? Carbon::parse($request->date)
             : Carbon::now();
 
         // Calculate date range based on view mode
@@ -60,7 +61,7 @@ class CalendarController extends Controller
 
         // Get available projects and users for filters
         $projects = Project::orderBy('name')->get();
-        $users = User::orderBy('name')->get();
+        $users = MoonshineUser::orderBy('name')->get();
 
         return view('calendar.index', compact(
             'tasksByDate',

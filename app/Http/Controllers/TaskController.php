@@ -50,8 +50,8 @@ class TaskController extends Controller
         }
 
         if ($request->filled('tags')) {
-            $tags = is_array($request->tags) 
-                ? $request->tags 
+            $tags = is_array($request->tags)
+                ? $request->tags
                 : explode(',', $request->tags);
             $query->byTags(array_filter($tags));
         }
@@ -81,10 +81,10 @@ class TaskController extends Controller
     public function store(StoreTaskRequest $request): RedirectResponse
     {
         $data = $request->validated();
-        
+
         // Set author_id to current user
         $data['author_id'] = auth()->id();
-        
+
         // Set default status if not provided
         if (!isset($data['status'])) {
             $data['status'] = TaskStatus::TODO;
@@ -185,8 +185,8 @@ class TaskController extends Controller
             'assignee_id' => ['required', 'exists:users,id'],
         ]);
 
-        $user = \App\Models\User::findOrFail($request->assignee_id);
-        
+        $user = \App\Models\MoonshineUser::findOrFail($request->assignee_id);
+
         $this->taskService->assignTask($task, $user);
 
         return redirect()

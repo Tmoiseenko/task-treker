@@ -100,7 +100,7 @@
             <select name="assignee_id" id="assignee_id"
                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 @error('assignee_id') border-red-500 @enderror">
                 <option value="">Не назначен</option>
-                @foreach(\App\Models\User::all() as $user)
+                @foreach(\App\Models\MoonshineUser::all() as $user)
                     <option value="{{ $user->id }}" {{ old('assignee_id', $task->assignee_id) == $user->id ? 'selected' : '' }}>
                         {{ $user->name }}
                     </option>

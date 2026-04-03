@@ -13,28 +13,28 @@
 </div>
 
 <!-- Filters -->
-<div class="bg-white rounded-lg shadow-sm p-6 mb-6" 
-     x-data="taskFilters()" 
+<div class="bg-white rounded-lg shadow-sm p-6 mb-6"
+     x-data="taskFilters()"
      x-init="initFromUrl()">
     <div class="space-y-4">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <!-- Search -->
             <div>
                 <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Поиск</label>
-                <input type="text" 
-                       x-model.debounce.500ms="filters.search" 
+                <input type="text"
+                       x-model.debounce.500ms="filters.search"
                        @input="applyFilters()"
-                       id="search" 
-                       placeholder="Название или описание..." 
+                       id="search"
+                       placeholder="Название или описание..."
                        class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
             </div>
 
             <!-- Project Filter -->
             <div>
                 <label for="project_id" class="block text-sm font-medium text-gray-700 mb-1">Проект</label>
-                <select x-model="filters.project_id" 
-                        @change="applyFilters()" 
-                        id="project_id" 
+                <select x-model="filters.project_id"
+                        @change="applyFilters()"
+                        id="project_id"
                         class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                     <option value="">Все проекты</option>
                     @foreach(\App\Models\Project::all() as $project)
@@ -46,9 +46,9 @@
             <!-- Status Filter -->
             <div>
                 <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Статус</label>
-                <select x-model="filters.status" 
-                        @change="applyFilters()" 
-                        id="status" 
+                <select x-model="filters.status"
+                        @change="applyFilters()"
+                        id="status"
                         class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                     <option value="">Все статусы</option>
                     @foreach(\App\Enums\TaskStatus::cases() as $status)
@@ -68,9 +68,9 @@
             <!-- Priority Filter -->
             <div>
                 <label for="priority" class="block text-sm font-medium text-gray-700 mb-1">Приоритет</label>
-                <select x-model="filters.priority" 
-                        @change="applyFilters()" 
-                        id="priority" 
+                <select x-model="filters.priority"
+                        @change="applyFilters()"
+                        id="priority"
                         class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                     <option value="">Все приоритеты</option>
                     @foreach(\App\Enums\TaskPriority::cases() as $priority)
@@ -89,12 +89,12 @@
             <!-- Assignee Filter -->
             <div>
                 <label for="assignee_id" class="block text-sm font-medium text-gray-700 mb-1">Исполнитель</label>
-                <select x-model="filters.assignee_id" 
-                        @change="applyFilters()" 
-                        id="assignee_id" 
+                <select x-model="filters.assignee_id"
+                        @change="applyFilters()"
+                        id="assignee_id"
                         class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                     <option value="">Все исполнители</option>
-                    @foreach(\App\Models\User::all() as $user)
+                    @foreach(\App\Models\MoonshineUser::all() as $user)
                         <option value="{{ $user->id }}">{{ $user->name }}</option>
                     @endforeach
                 </select>
@@ -103,12 +103,12 @@
             <!-- Author Filter -->
             <div>
                 <label for="author_id" class="block text-sm font-medium text-gray-700 mb-1">Автор</label>
-                <select x-model="filters.author_id" 
-                        @change="applyFilters()" 
-                        id="author_id" 
+                <select x-model="filters.author_id"
+                        @change="applyFilters()"
+                        id="author_id"
                         class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                     <option value="">Все авторы</option>
-                    @foreach(\App\Models\User::all() as $user)
+                    @foreach(\App\Models\MoonshineUser::all() as $user)
                         <option value="{{ $user->id }}">{{ $user->name }}</option>
                     @endforeach
                 </select>
@@ -117,9 +117,9 @@
             <!-- Tags Filter -->
             <div>
                 <label for="tags" class="block text-sm font-medium text-gray-700 mb-1">Теги</label>
-                <select x-model="filters.tags" 
-                        @change="applyFilters()" 
-                        id="tags" 
+                <select x-model="filters.tags"
+                        @change="applyFilters()"
+                        id="tags"
                         multiple
                         class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                     @foreach(\App\Models\Tag::all() as $tag)
@@ -131,8 +131,8 @@
         </div>
 
         <div class="flex gap-2">
-            <button @click="resetFilters()" 
-                    type="button" 
+            <button @click="resetFilters()"
+                    type="button"
                     class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded-lg">
                 Сбросить фильтры
             </button>
@@ -155,7 +155,7 @@ function taskFilters() {
             author_id: '',
             tags: []
         },
-        
+
         initFromUrl() {
             const urlParams = new URLSearchParams(window.location.search);
             this.filters.search = urlParams.get('search') || '';
@@ -164,17 +164,17 @@ function taskFilters() {
             this.filters.priority = urlParams.get('priority') || '';
             this.filters.assignee_id = urlParams.get('assignee_id') || '';
             this.filters.author_id = urlParams.get('author_id') || '';
-            
+
             // Handle tags array
             const tagsParam = urlParams.get('tags');
             if (tagsParam) {
                 this.filters.tags = tagsParam.split(',').filter(t => t);
             }
         },
-        
+
         applyFilters() {
             const params = new URLSearchParams();
-            
+
             // Add non-empty filters to URL
             Object.keys(this.filters).forEach(key => {
                 const value = this.filters[key];
@@ -186,15 +186,15 @@ function taskFilters() {
                     params.set(key, value);
                 }
             });
-            
+
             // Update URL and reload page
-            const newUrl = params.toString() ? 
-                `${window.location.pathname}?${params.toString()}` : 
+            const newUrl = params.toString() ?
+                `${window.location.pathname}?${params.toString()}` :
                 window.location.pathname;
-            
+
             window.location.href = newUrl;
         },
-        
+
         resetFilters() {
             this.filters = {
                 search: '',
@@ -207,7 +207,7 @@ function taskFilters() {
             };
             window.location.href = window.location.pathname;
         },
-        
+
         hasActiveFilters() {
             return Object.values(this.filters).some(value => {
                 if (Array.isArray(value)) {
@@ -232,7 +232,7 @@ function taskFilters() {
                                 <a href="{{ route('tasks.show', $task) }}" class="text-lg font-semibold text-gray-900 hover:text-indigo-600">
                                     {{ $task->title }}
                                 </a>
-                                
+
                                 <!-- Priority Badge -->
                                 <span class="px-2 py-1 text-xs font-semibold rounded-full {{ match($task->priority) {
                                     \App\Enums\TaskPriority::HIGH => 'bg-red-100 text-red-800',

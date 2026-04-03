@@ -8,17 +8,17 @@
 </div>
 
 <!-- Filters -->
-<div class="bg-white rounded-lg shadow-sm p-6 mb-6" 
-     x-data="kanbanFilters()" 
+<div class="bg-white rounded-lg shadow-sm p-6 mb-6"
+     x-data="kanbanFilters()"
      x-init="initFromUrl()">
     <div class="space-y-4">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <!-- Project Filter -->
             <div>
                 <label for="project_id" class="block text-sm font-medium text-gray-700 mb-1">Проект</label>
-                <select x-model="filters.project_id" 
-                        @change="applyFilters()" 
-                        id="project_id" 
+                <select x-model="filters.project_id"
+                        @change="applyFilters()"
+                        id="project_id"
                         class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                     <option value="">Все проекты</option>
                     @foreach($projects as $project)
@@ -30,12 +30,12 @@
             <!-- Assignee Filter -->
             <div>
                 <label for="assignee_id" class="block text-sm font-medium text-gray-700 mb-1">Исполнитель</label>
-                <select x-model="filters.assignee_id" 
-                        @change="applyFilters()" 
-                        id="assignee_id" 
+                <select x-model="filters.assignee_id"
+                        @change="applyFilters()"
+                        id="assignee_id"
                         class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                     <option value="">Все исполнители</option>
-                    @foreach(\App\Models\User::all() as $user)
+                    @foreach(\App\Models\MoonshineUser::all() as $user)
                         <option value="{{ $user->id }}">{{ $user->name }}</option>
                     @endforeach
                 </select>
@@ -44,9 +44,9 @@
             <!-- Priority Filter -->
             <div>
                 <label for="priority" class="block text-sm font-medium text-gray-700 mb-1">Приоритет</label>
-                <select x-model="filters.priority" 
-                        @change="applyFilters()" 
-                        id="priority" 
+                <select x-model="filters.priority"
+                        @change="applyFilters()"
+                        id="priority"
                         class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                     <option value="">Все приоритеты</option>
                     @foreach(\App\Enums\TaskPriority::cases() as $priority)
@@ -65,9 +65,9 @@
             <!-- Tags Filter -->
             <div>
                 <label for="tags" class="block text-sm font-medium text-gray-700 mb-1">Теги</label>
-                <select x-model="filters.tags" 
-                        @change="applyFilters()" 
-                        id="tags" 
+                <select x-model="filters.tags"
+                        @change="applyFilters()"
+                        id="tags"
                         multiple
                         class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                     @foreach(\App\Models\Tag::all() as $tag)
@@ -78,8 +78,8 @@
         </div>
 
         <div class="flex gap-2">
-            <button @click="resetFilters()" 
-                    type="button" 
+            <button @click="resetFilters()"
+                    type="button"
                     class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded-lg">
                 Сбросить фильтры
             </button>
@@ -92,10 +92,10 @@
 
 <!-- Kanban Board -->
 <div class="overflow-x-auto pb-4">
-    <div class="inline-flex gap-4 min-w-full" 
-         x-data="kanbanBoard()" 
+    <div class="inline-flex gap-4 min-w-full"
+         x-data="kanbanBoard()"
          x-init="initSortable()">
-        
+
         @foreach([
             ['status' => \App\Enums\TaskStatus::TODO, 'label' => 'Не выполнено', 'color' => 'gray'],
             ['status' => \App\Enums\TaskStatus::IN_PROGRESS, 'label' => 'В работе', 'color' => 'blue'],
@@ -115,23 +115,23 @@
                 </div>
 
                 <!-- Column Content -->
-                <div class="bg-{{ $column['color'] }}-50 rounded-b-lg p-4 min-h-[600px]" 
+                <div class="bg-{{ $column['color'] }}-50 rounded-b-lg p-4 min-h-[600px]"
                      data-status="{{ $column['status']->value }}"
                      data-sortable-column>
                     <div class="space-y-3">
                         @foreach($tasksByStatus[$column['status']->value] as $task)
                             @php
-                                $isOverdue = $task->due_date && 
-                                            $task->due_date->isPast() && 
+                                $isOverdue = $task->due_date &&
+                                            $task->due_date->isPast() &&
                                             $task->status !== \App\Enums\TaskStatus::DONE;
                             @endphp
-                            
+
                             <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-move border-l-4 {{ $isOverdue ? 'border-red-500 bg-red-50' : 'border-gray-200' }}"
                                  data-task-id="{{ $task->id }}"
                                  data-sortable-item>
                                 <div class="p-4">
                                     <!-- Task Title -->
-                                    <a href="{{ route('tasks.show', $task) }}" 
+                                    <a href="{{ route('tasks.show', $task) }}"
                                        class="block font-semibold text-gray-900 hover:text-indigo-600 mb-2"
                                        onclick="event.stopPropagation()">
                                         {{ $task->title }}
@@ -186,7 +186,7 @@
                                     @if($task->tags->count() > 0)
                                         <div class="flex flex-wrap gap-1 mt-3">
                                             @foreach($task->tags as $tag)
-                                                <span class="px-2 py-1 text-xs rounded-full" 
+                                                <span class="px-2 py-1 text-xs rounded-full"
                                                       style="background-color: {{ $tag->color }}20; color: {{ $tag->color }}">
                                                     {{ $tag->name }}
                                                 </span>
@@ -216,22 +216,22 @@ function kanbanFilters() {
             priority: '',
             tags: []
         },
-        
+
         initFromUrl() {
             const urlParams = new URLSearchParams(window.location.search);
             this.filters.project_id = urlParams.get('project_id') || '';
             this.filters.assignee_id = urlParams.get('assignee_id') || '';
             this.filters.priority = urlParams.get('priority') || '';
-            
+
             const tagsParam = urlParams.get('tags');
             if (tagsParam) {
                 this.filters.tags = tagsParam.split(',').filter(t => t);
             }
         },
-        
+
         applyFilters() {
             const params = new URLSearchParams();
-            
+
             Object.keys(this.filters).forEach(key => {
                 const value = this.filters[key];
                 if (Array.isArray(value)) {
@@ -242,14 +242,14 @@ function kanbanFilters() {
                     params.set(key, value);
                 }
             });
-            
-            const newUrl = params.toString() ? 
-                `${window.location.pathname}?${params.toString()}` : 
+
+            const newUrl = params.toString() ?
+                `${window.location.pathname}?${params.toString()}` :
                 window.location.pathname;
-            
+
             window.location.href = newUrl;
         },
-        
+
         resetFilters() {
             this.filters = {
                 project_id: '',
@@ -259,7 +259,7 @@ function kanbanFilters() {
             };
             window.location.href = window.location.pathname;
         },
-        
+
         hasActiveFilters() {
             return Object.values(this.filters).some(value => {
                 if (Array.isArray(value)) {
@@ -275,10 +275,10 @@ function kanbanFilters() {
 function kanbanBoard() {
     return {
         sortableInstances: [],
-        
+
         initSortable() {
             const columns = document.querySelectorAll('[data-sortable-column]');
-            
+
             columns.forEach(column => {
                 const sortable = Sortable.create(column, {
                     group: 'kanban',
@@ -290,15 +290,15 @@ function kanbanBoard() {
                         this.handleDrop(evt);
                     }
                 });
-                
+
                 this.sortableInstances.push(sortable);
             });
         },
-        
+
         async handleDrop(evt) {
             const taskId = evt.item.dataset.taskId;
             const newStatus = evt.to.dataset.status;
-            
+
             try {
                 const response = await fetch(`/kanban/tasks/${taskId}/status`, {
                     method: 'PATCH',
@@ -309,23 +309,23 @@ function kanbanBoard() {
                     },
                     body: JSON.stringify({ status: newStatus })
                 });
-                
+
                 const data = await response.json();
-                
+
                 if (!data.success) {
                     // Revert the move
                     evt.item.remove();
                     evt.from.insertBefore(evt.item, evt.from.children[evt.oldIndex]);
-                    
+
                     alert(data.message || 'Не удалось изменить статус задачи');
                 }
             } catch (error) {
                 console.error('Error updating task status:', error);
-                
+
                 // Revert the move
                 evt.item.remove();
                 evt.from.insertBefore(evt.item, evt.from.children[evt.oldIndex]);
-                
+
                 alert('Произошла ошибка при изменении статуса задачи');
             }
         }
