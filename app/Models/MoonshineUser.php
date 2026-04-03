@@ -3,13 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use MoonShine\Laravel\Models\MoonshineUser as BaseMoonshineUser;
 use MoonShine\Permissions\Traits\HasMoonShinePermissions;
 
 class MoonshineUser extends BaseMoonshineUser
 {
-    use HasFactory, Notifiable, HasMoonShinePermissions;
+    use HasFactory, Notifiable, HasMoonShinePermissions, softDeletes;
 
     protected $fillable = [
         'name',

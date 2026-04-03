@@ -15,8 +15,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('project_id')->constrained()->onDelete('cascade');
             $table->foreignId('stage_id')->constrained()->onDelete('cascade');
+            $table->softDeletes();
             $table->timestamps();
-            
+
             // Ensure unique combination of project and stage
             $table->unique(['project_id', 'stage_id']);
         });

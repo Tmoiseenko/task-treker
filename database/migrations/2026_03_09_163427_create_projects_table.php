@@ -17,6 +17,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('type'); // mobile_app, telegram_bot, website, crm_system
             $table->string('status')->default('active'); // active, archived, completed
+            $table->softDeletes();
             $table->timestamps();
         });
     }

@@ -15,8 +15,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('project_id')->constrained()->onDelete('cascade');
             $table->foreignId('moonshine_user_id')->constrained('moonshine_users')->onDelete('cascade');
+            $table->softDeletes();
             $table->timestamps();
-            
+
             // Ensure unique combination of project and user
             $table->unique(['project_id', 'moonshine_user_id']);
         });
