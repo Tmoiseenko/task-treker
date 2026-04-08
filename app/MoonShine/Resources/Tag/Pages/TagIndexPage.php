@@ -8,6 +8,7 @@ use MoonShine\Contracts\UI\ComponentContract;
 use MoonShine\Contracts\UI\FieldContract;
 use MoonShine\Laravel\Pages\Crud\IndexPage;
 use App\MoonShine\Resources\Tag\TagResource;
+use MoonShine\UI\Components\Badge;
 use MoonShine\UI\Components\Table\TableBuilder;
 use MoonShine\UI\Fields\Color;
 use MoonShine\UI\Fields\ID;
@@ -28,7 +29,9 @@ final class TagIndexPage extends IndexPage
 
             Text::make('Название', 'name')->sortable(),
 
-            Color::make('Цвет', 'color'),
+            Text::make('Цвет', 'color')->changePreview(function ($value) {
+                return Badge::make($value, $value);
+            }),
         ];
     }
 

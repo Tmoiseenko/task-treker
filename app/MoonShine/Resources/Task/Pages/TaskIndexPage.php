@@ -58,7 +58,9 @@ final class TaskIndexPage extends IndexPage
             Date::make('Срок выполнения', 'due_date')
                 ->sortable(),
 
-            BelongsToMany::make('Теги', 'tags', resource: TagResource::class),
+            BelongsToMany::make('Теги', 'tags', resource: TagResource::class)->changePreview(
+                fn($tags) => $tags->pluck('name')->join(', ')
+            ),
         ];
     }
 
