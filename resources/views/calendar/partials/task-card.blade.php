@@ -1,7 +1,7 @@
 {{-- Task Card for Week View --}}
 @php
-    $isOverdue = $task->due_date && 
-                $task->due_date->isPast() && 
+    $isOverdue = $task->due_date &&
+                $task->due_date->isPast() &&
                 $task->status !== \App\Enums\TaskStatus::DONE;
 @endphp
 
@@ -14,13 +14,14 @@
              \App\Enums\TaskStatus::IN_PROGRESS => 'В работе',
              \App\Enums\TaskStatus::IN_TESTING => 'На тестировании',
              \App\Enums\TaskStatus::TEST_FAILED => 'Тест провален',
+             \App\Enums\TaskStatus::FOR_UNLOADING => 'Готово к выгрузке',
              \App\Enums\TaskStatus::DONE => 'Выполнено',
          } }}',
          assignee: '{{ $task->assignee ? addslashes($task->assignee->name) : '' }}',
          due_date: '{{ $task->due_date->format('d.m.Y') }}',
          url: '{{ route('tasks.show', $task) }}'
      })">
-    
+
     <!-- Task Title -->
     <div class="font-semibold text-sm text-gray-900 mb-2 line-clamp-2">
         {{ $task->title }}
@@ -38,6 +39,7 @@
             \App\Enums\TaskStatus::IN_PROGRESS => 'bg-blue-100 text-blue-800',
             \App\Enums\TaskStatus::IN_TESTING => 'bg-purple-100 text-purple-800',
             \App\Enums\TaskStatus::TEST_FAILED => 'bg-red-100 text-red-800',
+            \App\Enums\TaskStatus::FOR_UNLOADING => 'bg-orange-100 text-orange-800',
             \App\Enums\TaskStatus::DONE => 'bg-green-100 text-green-800',
         } }}">
             {{ match($task->status) {
@@ -45,6 +47,7 @@
                 \App\Enums\TaskStatus::IN_PROGRESS => 'В работе',
                 \App\Enums\TaskStatus::IN_TESTING => 'На тестировании',
                 \App\Enums\TaskStatus::TEST_FAILED => 'Тест провален',
+                \App\Enums\TaskStatus::FOR_UNLOADING => 'Готово к выгрузке',
                 \App\Enums\TaskStatus::DONE => 'Выполнено',
             } }}
         </span>

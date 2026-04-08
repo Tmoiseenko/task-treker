@@ -1,7 +1,7 @@
 {{-- Project Time Summary Widget --}}
 <div class="bg-white rounded-lg shadow-sm p-6">
     <h2 class="text-lg font-semibold text-gray-900 mb-4">Учет времени по проекту</h2>
-    
+
     {{-- Project Total Time --}}
     <div class="mb-6 p-4 bg-indigo-50 rounded-lg">
         <div class="flex justify-between items-center">
@@ -12,7 +12,7 @@
             </div>
         </div>
     </div>
-    
+
     {{-- Breakdown by Task --}}
     @if($project->tasks->count() > 0)
         <div class="space-y-3">
@@ -26,7 +26,7 @@
                         return $stage->timeEntries->sum('cost');
                     });
                 @endphp
-                
+
                 @if($taskHours > 0)
                     <a href="{{ route('tasks.show', $task) }}" class="block border-l-4 border-indigo-300 pl-3 py-2 hover:bg-gray-50 transition">
                         <div class="flex justify-between items-start">
@@ -38,6 +38,7 @@
                                         \App\Enums\TaskStatus::IN_PROGRESS => 'bg-blue-100 text-blue-800',
                                         \App\Enums\TaskStatus::IN_TESTING => 'bg-purple-100 text-purple-800',
                                         \App\Enums\TaskStatus::TEST_FAILED => 'bg-red-100 text-red-800',
+                                        \App\Enums\TaskStatus::FOR_UNLOADING => 'bg-orange-100 text-orange-800',
                                         \App\Enums\TaskStatus::DONE => 'bg-green-100 text-green-800',
                                     } }}">
                                         {{ match($task->status) {
@@ -45,6 +46,7 @@
                                             \App\Enums\TaskStatus::IN_PROGRESS => 'В работе',
                                             \App\Enums\TaskStatus::IN_TESTING => 'На тестировании',
                                             \App\Enums\TaskStatus::TEST_FAILED => 'Тест провален',
+                                            \App\Enums\TaskStatus::FOR_UNLOADING => 'Готово к выгрузке',
                                             \App\Enums\TaskStatus::DONE => 'Выполнено',
                                         } }}
                                     </span>
@@ -60,7 +62,7 @@
             @endforeach
         </div>
     @endif
-    
+
     {{-- Breakdown by User --}}
     @php
         $userBreakdown = [];
@@ -80,7 +82,7 @@
             }
         }
     @endphp
-    
+
     @if(count($userBreakdown) > 0)
         <div class="mt-6 pt-6 border-t border-gray-200">
             <h3 class="text-sm font-semibold text-gray-700 mb-3">По исполнителям:</h3>
@@ -97,7 +99,7 @@
             </div>
         </div>
     @endif
-    
+
     {{-- Breakdown by Stage --}}
     @php
         $stageBreakdown = [];
@@ -115,7 +117,7 @@
             }
         }
     @endphp
-    
+
     @if(count($stageBreakdown) > 0)
         <div class="mt-6 pt-6 border-t border-gray-200">
             <h3 class="text-sm font-semibold text-gray-700 mb-3">По этапам:</h3>

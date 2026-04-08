@@ -36,7 +36,7 @@ class CheckDeadlines extends Command
 
         // Check tasks with deadline approaching in 24 hours
         $approachingTasks = Task::whereNotNull('due_date')
-            ->whereNotIn('status', [TaskStatus::DONE])
+            ->whereNotIn('status', [TaskStatus::DONE, TaskStatus::FOR_UNLOADING])
             ->whereBetween('due_date', [$now, $in24Hours])
             ->get()
             ->filter(function ($task) use ($now) {
@@ -45,7 +45,7 @@ class CheckDeadlines extends Command
                     ->where('created_at', '>=', $now->copy()->subHours(23))
                     ->whereJsonContains('data->task_id', $task->id)
                     ->exists();
-                
+
                 return !$recentNotification;
             });
 
@@ -56,7 +56,7 @@ class CheckDeadlines extends Command
 
         // Check overdue tasks
         $overdueTasks = Task::whereNotNull('due_date')
-            ->whereNotIn('status', [TaskStatus::DONE])
+            ->whereNotIn('status', [TaskStatus::DONE, TaskStatus::FOR_UNLOADING])
             ->where('due_date', '<', $now)
             ->get()
             ->filter(function ($task) use ($now) {
@@ -65,7 +65,7 @@ class CheckDeadlines extends Command
                     ->where('created_at', '>=', $now->copy()->subHours(23))
                     ->whereJsonContains('data->task_id', $task->id)
                     ->exists();
-                
+
                 return !$recentNotification;
             });
 

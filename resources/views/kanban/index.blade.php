@@ -101,6 +101,7 @@
             ['status' => \App\Enums\TaskStatus::IN_PROGRESS, 'label' => 'В работе', 'color' => 'blue'],
             ['status' => \App\Enums\TaskStatus::IN_TESTING, 'label' => 'На тестировании', 'color' => 'purple'],
             ['status' => \App\Enums\TaskStatus::TEST_FAILED, 'label' => 'Тест провален', 'color' => 'red'],
+            ['status' => \App\Enums\TaskStatus::FOR_UNLOADING, 'label' => 'Готово к выгрузке', 'color' => 'orange'],
             ['status' => \App\Enums\TaskStatus::DONE, 'label' => 'Выполнено', 'color' => 'green'],
         ] as $column)
             <div class="flex-shrink-0 w-80">

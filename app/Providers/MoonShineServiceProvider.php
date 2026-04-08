@@ -15,6 +15,7 @@ use App\MoonShine\Resources\Stage\StageResource;
 use App\MoonShine\Resources\Task\TaskResource;
 use App\MoonShine\Resources\Tag\TagResource;
 use App\MoonShine\Resources\Document\DocumentResource;
+use App\MoonShine\Pages\Kanban;
 
 class MoonShineServiceProvider extends ServiceProvider
 {
@@ -35,6 +36,7 @@ class MoonShineServiceProvider extends ServiceProvider
             ])
             ->pages([
                 ...$core->getConfig()->getPages(),
+                Kanban::class,
             ])
         ;
     }

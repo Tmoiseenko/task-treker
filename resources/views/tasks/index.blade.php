@@ -58,6 +58,7 @@
                                 \App\Enums\TaskStatus::IN_PROGRESS => 'В работе',
                                 \App\Enums\TaskStatus::IN_TESTING => 'На тестировании',
                                 \App\Enums\TaskStatus::TEST_FAILED => 'Тест провален',
+                                \App\Enums\TaskStatus::FOR_UNLOADING => 'Готово к выгрузке',
                                 \App\Enums\TaskStatus::DONE => 'Выполнено',
                             } }}
                         </option>
@@ -254,6 +255,7 @@ function taskFilters() {
                                     \App\Enums\TaskStatus::IN_PROGRESS => 'bg-blue-100 text-blue-800',
                                     \App\Enums\TaskStatus::IN_TESTING => 'bg-purple-100 text-purple-800',
                                     \App\Enums\TaskStatus::TEST_FAILED => 'bg-red-100 text-red-800',
+                                    \App\Enums\TaskStatus::FOR_UNLOADING => 'bg-orange-100 text-orange-800',
                                     \App\Enums\TaskStatus::DONE => 'bg-green-100 text-green-800',
                                 } }}">
                                     {{ match($task->status) {
@@ -261,6 +263,7 @@ function taskFilters() {
                                         \App\Enums\TaskStatus::IN_PROGRESS => 'В работе',
                                         \App\Enums\TaskStatus::IN_TESTING => 'На тестировании',
                                         \App\Enums\TaskStatus::TEST_FAILED => 'Тест провален',
+                                        \App\Enums\TaskStatus::FOR_UNLOADING => 'Готово к выгрузке',
                                         \App\Enums\TaskStatus::DONE => 'Выполнено',
                                     } }}
                                 </span>

@@ -40,8 +40,8 @@ class KanbanController extends Controller
         }
 
         if ($request->filled('tags')) {
-            $tags = is_array($request->tags) 
-                ? $request->tags 
+            $tags = is_array($request->tags)
+                ? $request->tags
                 : explode(',', $request->tags);
             $query->byTags(array_filter($tags));
         }
@@ -55,6 +55,7 @@ class KanbanController extends Controller
             TaskStatus::IN_PROGRESS->value => $tasks->where('status', TaskStatus::IN_PROGRESS),
             TaskStatus::IN_TESTING->value => $tasks->where('status', TaskStatus::IN_TESTING),
             TaskStatus::TEST_FAILED->value => $tasks->where('status', TaskStatus::TEST_FAILED),
+            TaskStatus::FOR_UNLOADING->value => $tasks->where('status', TaskStatus::FOR_UNLOADING),
             TaskStatus::DONE->value => $tasks->where('status', TaskStatus::DONE),
         ];
 

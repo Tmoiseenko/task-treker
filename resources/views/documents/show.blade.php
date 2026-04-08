@@ -35,7 +35,7 @@
         <a href="{{ route('documents.edit', $document) }}" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg">
             Редактировать
         </a>
-        
+
         <form method="POST" action="{{ route('documents.destroy', $document) }}" onsubmit="return confirm('Вы уверены, что хотите удалить этот документ?')">
             @csrf
             @method('DELETE')
@@ -60,14 +60,14 @@
             <div class="bg-white rounded-lg shadow-sm p-6" x-data="{ showHistory: false }">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-xl font-semibold text-gray-900">История версий</h2>
-                    <button 
+                    <button
                         @click="showHistory = !showHistory"
                         class="text-sm text-indigo-600 hover:text-indigo-800 font-medium">
                         <span x-show="!showHistory">Показать историю ({{ $document->versions->count() }})</span>
                         <span x-show="showHistory">Скрыть историю</span>
                     </button>
                 </div>
-                
+
                 <div x-show="showHistory" x-collapse class="space-y-3">
                     @foreach($document->versions->sortByDesc('version') as $version)
                         <div class="border border-gray-200 rounded-lg p-4 {{ $version->version === $document->version ? 'bg-indigo-50 border-indigo-300' : '' }}">
@@ -111,6 +111,7 @@
                                     \App\Enums\TaskStatus::IN_PROGRESS => 'bg-blue-100 text-blue-800',
                                     \App\Enums\TaskStatus::IN_TESTING => 'bg-purple-100 text-purple-800',
                                     \App\Enums\TaskStatus::TEST_FAILED => 'bg-red-100 text-red-800',
+                                    \App\Enums\TaskStatus::FOR_UNLOADING => 'bg-orange-100 text-orange-800',
                                     \App\Enums\TaskStatus::DONE => 'bg-green-100 text-green-800',
                                 } }}">
                                     {{ match($task->status) {
@@ -118,6 +119,7 @@
                                         \App\Enums\TaskStatus::IN_PROGRESS => 'В работе',
                                         \App\Enums\TaskStatus::IN_TESTING => 'На тестировании',
                                         \App\Enums\TaskStatus::TEST_FAILED => 'Тест провален',
+                                        \App\Enums\TaskStatus::FOR_UNLOADING => 'Готово к выгрузке',
                                         \App\Enums\TaskStatus::DONE => 'Выполнено',
                                     } }}
                                 </span>
@@ -170,8 +172,8 @@
             <form method="POST" action="{{ route('documents.attach-task', $document) }}">
                 @csrf
                 <div class="space-y-3">
-                    <select name="task_id" 
-                            id="task_id" 
+                    <select name="task_id"
+                            id="task_id"
                             required
                             class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                         <option value="">Выберите задачу</option>

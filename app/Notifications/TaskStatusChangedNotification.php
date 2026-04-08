@@ -29,6 +29,7 @@ class TaskStatusChangedNotification extends Notification
             TaskStatus::IN_PROGRESS => 'в работе',
             TaskStatus::IN_TESTING => 'на тестировании',
             TaskStatus::TEST_FAILED => 'тест провален',
+            TaskStatus::FOR_UNLOADING => 'готово к выгрузке',
             TaskStatus::DONE => 'выполнено',
         };
 

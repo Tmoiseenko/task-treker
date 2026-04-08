@@ -28,6 +28,7 @@
                 \App\Enums\TaskStatus::IN_PROGRESS => 'bg-blue-100 text-blue-800',
                 \App\Enums\TaskStatus::IN_TESTING => 'bg-purple-100 text-purple-800',
                 \App\Enums\TaskStatus::TEST_FAILED => 'bg-red-100 text-red-800',
+                \App\Enums\TaskStatus::FOR_UNLOADING => 'bg-orange-100 text-orange-800',
                 \App\Enums\TaskStatus::DONE => 'bg-green-100 text-green-800',
             } }}">
                 {{ match($task->status) {
@@ -35,6 +36,7 @@
                     \App\Enums\TaskStatus::IN_PROGRESS => 'В работе',
                     \App\Enums\TaskStatus::IN_TESTING => 'На тестировании',
                     \App\Enums\TaskStatus::TEST_FAILED => 'Тест провален',
+                    \App\Enums\TaskStatus::FOR_UNLOADING => 'Готово к выгрузке',
                     \App\Enums\TaskStatus::DONE => 'Выполнено',
                 } }}
             </span>
@@ -47,7 +49,7 @@
                 Редактировать
             </a>
         @endcan
-        
+
         @can('delete', $task)
             <form method="POST" action="{{ route('tasks.destroy', $task) }}" onsubmit="return confirm('Вы уверены, что хотите удалить эту задачу?')">
                 @csrf
@@ -74,14 +76,14 @@
             <div class="bg-white rounded-lg shadow-sm p-6" x-data="{ showTimeTracking: false }">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-xl font-semibold text-gray-900">Этапы задачи</h2>
-                    <button 
+                    <button
                         @click="showTimeTracking = !showTimeTracking"
                         class="text-sm text-indigo-600 hover:text-indigo-800 font-medium">
                         <span x-show="!showTimeTracking">Показать учет времени</span>
                         <span x-show="showTimeTracking">Скрыть учет времени</span>
                     </button>
                 </div>
-                
+
                 <div class="space-y-4">
                     @foreach($task->taskStages as $taskStage)
                         <div class="border border-gray-200 rounded-lg overflow-hidden">
@@ -95,7 +97,7 @@
                                     <p class="text-sm text-gray-600 mt-2">{{ $taskStage->stage->description }}</p>
                                 @endif
                             </div>
-                            
+
                             {{-- Time Tracking Section (collapsible) --}}
                             <div x-show="showTimeTracking" x-collapse class="p-4 border-t border-gray-200">
                                 @include('tasks.partials.time-tracking', ['taskStage' => $taskStage])
@@ -135,7 +137,7 @@
             'totalHours' => $totalHours,
             'totalCost' => $totalCost
         ])
-        
+
         <!-- Actions -->
         <div class="bg-white rounded-lg shadow-sm p-6">
             <h2 class="text-lg font-semibold text-gray-900 mb-4">Действия</h2>
@@ -163,8 +165,32 @@
                     @endif
                 @endcan
 
-                @can('changeStatus', [$task, \App\Enums\TaskStatus::DONE])
+                @can('changeStatus', [$task, \App\Enums\TaskStatus::FOR_UNLOADING])
                     @if($task->status === \App\Enums\TaskStatus::IN_TESTING)
+                        <form method="POST" action="{{ route('tasks.change-status', $task) }}">
+                            @csrf
+                            <input type="hidden" name="status" value="{{ \App\Enums\TaskStatus::FOR_UNLOADING->value }}">
+                            <button type="submit" class="w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold py-2 px-4 rounded-lg">
+                                Готово к выгрузке
+                            </button>
+                        </form>
+                    @endif
+                @endcan
+
+                @can('changeStatus', [$task, \App\Enums\TaskStatus::TEST_FAILED])
+                    @if($task->status === \App\Enums\TaskStatus::IN_TESTING)
+                        <form method="POST" action="{{ route('tasks.change-status', $task) }}">
+                            @csrf
+                            <input type="hidden" name="status" value="{{ \App\Enums\TaskStatus::TEST_FAILED->value }}">
+                            <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg">
+                                Тест не пройден
+                            </button>
+                        </form>
+                    @endif
+                @endcan
+
+                @can('changeStatus', [$task, \App\Enums\TaskStatus::DONE])
+                    @if($task->status === \App\Enums\TaskStatus::FOR_UNLOADING)
                         <form method="POST" action="{{ route('tasks.change-status', $task) }}">
                             @csrf
                             <input type="hidden" name="status" value="{{ \App\Enums\TaskStatus::DONE->value }}">

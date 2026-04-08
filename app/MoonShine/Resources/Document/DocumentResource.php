@@ -12,16 +12,18 @@ use App\MoonShine\Resources\Document\Pages\DocumentDetailPage;
 
 use MoonShine\Laravel\Resources\ModelResource;
 use MoonShine\Contracts\Core\PageContract;
+use MoonShine\Support\Attributes\Icon;
 
 /**
  * @extends ModelResource<Document, DocumentIndexPage, DocumentFormPage, DocumentDetailPage>
  */
+#[Icon('document-duplicate')]
 class DocumentResource extends ModelResource
 {
     protected string $model = Document::class;
 
     protected string $title = 'Documents';
-    
+
     /**
      * @return list<class-string<PageContract>>
      */

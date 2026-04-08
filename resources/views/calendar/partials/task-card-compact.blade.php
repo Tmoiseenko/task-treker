@@ -1,7 +1,7 @@
 {{-- Compact Task Card for Month View --}}
 @php
-    $isOverdue = $task->due_date && 
-                $task->due_date->isPast() && 
+    $isOverdue = $task->due_date &&
+                $task->due_date->isPast() &&
                 $task->status !== \App\Enums\TaskStatus::DONE;
 @endphp
 
@@ -14,17 +14,18 @@
              \App\Enums\TaskStatus::IN_PROGRESS => 'В работе',
              \App\Enums\TaskStatus::IN_TESTING => 'На тестировании',
              \App\Enums\TaskStatus::TEST_FAILED => 'Тест провален',
+             \App\Enums\TaskStatus::FOR_UNLOADING => 'Готово к выгрузке',
              \App\Enums\TaskStatus::DONE => 'Выполнено',
          } }}',
          assignee: '{{ $task->assignee ? addslashes($task->assignee->name) : '' }}',
          due_date: '{{ $task->due_date->format('d.m.Y') }}',
          url: '{{ route('tasks.show', $task) }}'
      })">
-    
+
     <div class="font-semibold text-gray-900 truncate">
         {{ $task->title }}
     </div>
-    
+
     <div class="flex items-center gap-1 mt-0.5">
         <!-- Status Indicator -->
         <span class="w-2 h-2 rounded-full {{ match($task->status) {
@@ -32,9 +33,10 @@
             \App\Enums\TaskStatus::IN_PROGRESS => 'bg-blue-500',
             \App\Enums\TaskStatus::IN_TESTING => 'bg-purple-500',
             \App\Enums\TaskStatus::TEST_FAILED => 'bg-red-500',
+            \App\Enums\TaskStatus::FOR_UNLOADING => 'bg-orange-500',
             \App\Enums\TaskStatus::DONE => 'bg-green-500',
         } }}"></span>
-        
+
         <span class="text-gray-600 truncate">{{ $task->project->name }}</span>
     </div>
 </div>
