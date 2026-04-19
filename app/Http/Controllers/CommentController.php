@@ -5,8 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreCommentRequest;
 use App\Models\Comment;
 use App\Models\Task;
+use App\MoonShine\Resources\Task\Pages\TaskDetailPage;
+use App\MoonShine\Resources\Task\Pages\TaskFormPage;
+use App\MoonShine\Resources\Task\TaskResource;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Resources\Json\JsonResource;
+use Symfony\Component\HttpFoundation\Response;
 
 class CommentController extends Controller
 {
@@ -15,38 +20,32 @@ class CommentController extends Controller
     /**
      * Store a newly created comment in storage.
      */
-    public function store(StoreCommentRequest $request, Task $task): RedirectResponse
+    public function store(StoreCommentRequest $request)
     {
-        $comment = $task->comments()->create([
-            'user_id' => auth()->id(),
-            'content' => $request->validated()['content'],
-        ]);
+        $validated = $request->validated();
 
-        return redirect()
-            ->route('tasks.show', $task)
-            ->with('success', 'Комментарий успешно добавлен');
+        Comment::create($validated);
+
+        return response()->json([
+            'message' => 'Комментарий успешно добавлен',
+            'status' => Response::HTTP_CREATED
+        ]);
     }
 
     /**
      * Remove the specified comment from storage (soft delete).
      */
-    public function destroy(Task $task, Comment $comment): RedirectResponse
+    public function destroy(Comment $comment): RedirectResponse
     {
-        // Ensure comment belongs to the task
-        if ($comment->task_id !== $task->id) {
-            abort(404);
-        }
-
+        $taskId = $comment->task_id;
         // Only the comment author can delete their own comment
-        if ($comment->user_id !== auth()->id()) {
+        if ($comment->moonshine_user_id !== auth()->id()) {
             abort(403, 'Вы можете удалять только свои комментарии');
         }
 
         // Soft delete by setting deleted_at timestamp
-        $comment->update(['deleted_at' => now()]);
+        $comment->delete();
 
-        return redirect()
-            ->route('tasks.show', $task)
-            ->with('success', 'Комментарий успешно удален');
+        return redirect()->back();
     }
 }

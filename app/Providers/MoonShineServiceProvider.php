@@ -16,6 +16,7 @@ use App\MoonShine\Resources\Task\TaskResource;
 use App\MoonShine\Resources\Tag\TagResource;
 use App\MoonShine\Resources\Document\DocumentResource;
 use App\MoonShine\Pages\Kanban;
+use App\MoonShine\Resources\Comment\CommentResource;
 
 class MoonShineServiceProvider extends ServiceProvider
 {
@@ -33,6 +34,7 @@ class MoonShineServiceProvider extends ServiceProvider
                 TaskResource::class,
                 TagResource::class,
                 DocumentResource::class,
+                CommentResource::class,
             ])
             ->pages([
                 ...$core->getConfig()->getPages(),

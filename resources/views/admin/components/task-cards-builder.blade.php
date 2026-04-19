@@ -68,12 +68,6 @@
                                     </span>
                                 @endforeach
                             </span>
-                            <span>
-                                <a href="{{ $urlEdit }}"
-                                   class="font-semibold hover:underline leading-tight flex-1 min-w-0 badge badge-primary">
-                                    <x-moonshine::icon icon="pencil-square" path="moonshine::icons.s" size="5"/>
-                                </a>
-                            </span>
                         </div>
                     @endif
 

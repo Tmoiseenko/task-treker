@@ -23,7 +23,7 @@ class Task extends Model
         'parent_task_id',
     ];
 
-    protected $with = ['assignee', 'tags'];
+    protected $with = ['assignee', 'tags', 'comments'];
 
     protected function casts(): array
     {

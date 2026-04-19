@@ -11,8 +11,7 @@ class StoreCommentRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        // User must be able to view the task to comment on it
-        return $this->user()->can('view', $this->route('task'));
+        return true;
     }
 
     /**
@@ -22,6 +21,8 @@ class StoreCommentRequest extends FormRequest
     {
         return [
             'content' => ['required', 'string', 'max:10000'],
+            'task_id' => ['required', 'exists:tasks,id'],
+            'moonshine_user_id' => ['required', 'exists:moonshine_users,id'],
         ];
     }
 

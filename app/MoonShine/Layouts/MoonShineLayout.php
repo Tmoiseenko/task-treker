@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace App\MoonShine\Layouts;
 
-use App\MoonShine\Pages\Kanban;
 use MoonShine\ColorManager\Palettes\PurplePalette;
 use MoonShine\Laravel\Layouts\AppLayout;
-use MoonShine\ColorManager\Palettes\LimePalette;
 use MoonShine\ColorManager\ColorManager;
 use MoonShine\Contracts\ColorManager\ColorManagerContract;
 use MoonShine\Contracts\ColorManager\PaletteContract;
@@ -19,6 +17,7 @@ use App\MoonShine\Resources\Tag\TagResource;
 use MoonShine\AssetManager\InlineCss;
 use MoonShine\MenuManager\MenuItem;
 use MoonShine\MenuManager\MenuGroup;
+use App\MoonShine\Resources\Comment\CommentResource;
 
 final class MoonShineLayout extends AppLayout
 {
@@ -566,11 +565,11 @@ final class MoonShineLayout extends AppLayout
                 MenuItem::make(ProjectResource::class),
                 MenuItem::make(TaskResource::class),
                 MenuItem::make(StageResource::class),
-                MenuItem::make(TagResource::class)
+                MenuItem::make(TagResource::class),
             ]),
 
             MenuItem::make(DocumentResource::class),
-            MenuItem::make(Kanban::class)
+            MenuItem::make(CommentResource::class, 'Comments'),
         ];
     }
 
