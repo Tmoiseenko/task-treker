@@ -6,6 +6,10 @@ namespace App\MoonShine\Resources\Task\Pages;
 
 use App\Enums\TaskPriority;
 use App\Enums\TaskStatus;
+use App\Models\Task;
+use App\MoonShine\Components\KanbanBoard;
+use App\MoonShine\Components\KanbanColumn;
+use App\MoonShine\Components\TaskCardsBuilder;
 use MoonShine\Contracts\UI\ComponentContract;
 use MoonShine\Contracts\UI\FieldContract;
 use MoonShine\Laravel\Pages\Crud\IndexPage;
@@ -70,15 +74,19 @@ final class TaskIndexPage extends IndexPage
             Text::make('Название', 'title'),
 
             BelongsTo::make('Проект', 'project', resource: ProjectResource::class)
+                ->nullable()
                 ->searchable(),
 
             Enum::make('Статус', 'status')
+                ->nullable()
                 ->attach(TaskStatus::class),
 
             Enum::make('Приоритет', 'priority')
+                ->nullable()
                 ->attach(TaskPriority::class),
 
             BelongsTo::make('Исполнитель', 'assignee', resource: MoonShineUserResource::class)
+                ->nullable()
                 ->searchable(),
         ];
     }
@@ -91,5 +99,44 @@ final class TaskIndexPage extends IndexPage
     protected function modifyListComponent(ComponentContract $component): TableBuilder
     {
         return $component->columnSelection();
+    }
+    protected function getItemsComponents(): array
+    {
+        if ($this->getCore()->getRequest()->has('_no_items_query')) {
+            return [];
+        }
+
+//        dd($this->getCore()->getRequest());
+
+        $this->getResource()->setQueryParams(
+            $this->getCore()->getRequest()->getOnly($this->getResource()->getQueryParamsKeys()),
+        );
+
+        $tasksByStatus = $this->getResource()->getItems()->groupBy(fn(Task $task) => $task->status->value);
+
+        $columns = array_map(function (TaskStatus $status) use ($tasksByStatus): KanbanColumn {
+            $tasks = $tasksByStatus->get($status->value, collect());
+
+            $cards = TaskCardsBuilder::make($tasks)
+                ->urlDetail(fn(Task $task) => toPage(
+                    page: TaskDetailPage::class,
+                    resource: TaskResource::class,
+                    params: ['resourceItem' => $task->id],
+                ))
+                ->urlEdit(fn(Task $task) => toPage(
+                    page: TaskFormPage::class,
+                    resource: TaskResource::class,
+                    params: ['resourceItem' => $task->id],
+                ));
+
+            return KanbanColumn::make(
+                labelOrComponents: "{$status->label()} ({$tasks->count()})",
+                components: [$cards],
+            );
+        }, TaskStatus::cases());
+
+        return [
+            KanbanBoard::make($columns),
+        ];
     }
 }

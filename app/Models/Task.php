@@ -23,6 +23,8 @@ class Task extends Model
         'parent_task_id',
     ];
 
+    protected $with = ['assignee', 'tags'];
+
     protected function casts(): array
     {
         return [
@@ -126,7 +128,7 @@ class Task extends Model
                 $q->whereIn('tags.id', $tagIds);
             });
         }
-        
+
         return $query->whereHas('tags', function ($q) use ($tagIds) {
             $q->where('tags.id', $tagIds);
         });
